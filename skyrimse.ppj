@@ -1,0 +1,67 @@
+<?xml version='1.0'?>
+<PapyrusProject xmlns="PapyrusProject.xsd" 
+    Flags="TESV_Papyrus_Flags.flg" 
+    Game="sse"
+    Output="Scripts" 
+    Anonymize="true" 
+    Optimize="false" 
+    Release="false" 
+    Zip="false"
+    Package="false"
+    Final="false">
+    <!--
+        These variables contain hard-coded paths because the VS Code Papyrus extension does not support environment variables: https://github.com/joelday/papyrus-lang/issues/145
+        Please change the values of these variables to point to folders on your PC.
+        Notes:
+        - To create the contents of the "Imports" folder yourself, download the listed mods from Nexus or elsewhere and extract them to a folder.
+        - In a few cases (notably UIExtensions) the authors put .psc files into .bsa, so be sure to also extract .bsa for these mods.
+        - The "SKSE" mod contains the contents of the Data\ folder of SKSE as downloaded from https://skse.silverlock.org/
+        To provide better portability, I *always* use "C:\Modding\PapyrusImports" and "C:\Modding\SkyrimScripting" in my .ppj files
+        Tip:
+        - If you want, you can make these symlinks to other folders on your PC.
+        - This is what I do! These paths actually link to folders in my Dropbox directory.
+        - To create a symlink, open PowerShell as administrator and run something like the following:
+          New-Item -ItemType SymbolicLink -Path "C:\Modding\PapyrusImports" -Target "C:\Users\mrowr\Dropbox\Skyrim\PapyrusImports"
+    -->
+    <Variables>
+        <!-- Set the name of your mod: -->
+        <Variable Name="ModName" Value="Skyrim VR Tools Malarkey"/>
+        <!-- The folder where you store all of your mods -->
+        <Variable Name="ModsFolder" Value="C:\Modding\Mods" />
+        <!-- The folder where you store additional Papyrus imports -->
+        <Variable Name="ImportsFolder" Value="C:\Modding\Code\Papyrus Imports" />
+    </Variables>
+    <Imports>
+        <!-- <Import>@ImportsFolder\SKSE\Scripts\Source</Import> -->
+        <Import>@ImportsFolder\Skyrim VR Tools</Import>
+        <Import>@ImportsFolder\SKSE</Import>
+        <Import>@ImportsFolder\VanillaScripts</Import>
+    </Imports>
+    <Folders>
+        <!-- Relative path to folder containing .psc Papyrus source code files for this project -->
+        <Folder>./Scripts/Source</Folder>
+    </Folders>
+    <!-- The following section is for .bsa archives. You can enable it by setting Package="true" in the PapyrusProject -->
+    <Packages Output=".">
+        <Package Name="@ModName" RootDir=".">
+            <Match In="Scripts">*.pex</Match>
+            <!-- <Match In="interface\translations">*.txt</Match> -->
+        </Package>
+        <!-- If you have any texture files, uncomment the following to create a Textures .bsa archive with texture files -->
+        <!-- <Package Name="@ModName - Textures" RootDir=".">
+            <Include>*.dds</Include>
+        </Package> -->
+    </Packages>
+    <!-- The following section is for .zip archive. You can enable it by setting Zip="true" in the PapyrusProject -->
+    <ZipFiles Output="Build">
+        <ZipFile Name="@ModName" RootDir="." Compression="deflate">
+            <Include>@ModName.esp</Include>
+            <Include NoRecurse="true">*.bsa</Include>
+            <Match In="Scripts\Source">*.psc</Match>
+        </ZipFile>
+    </ZipFiles>
+    <!-- This will remove any *.bsa files in this directory *after* the build, if there are any. Set UseInBuild="false" to disable. -->
+    <!-- <PostBuildEvent Description="Post-Build Remove BSA Files" UseInBuild="true">
+        <Command>del /s /q /f *.bsa</Command>
+    </PostBuildEvent> -->
+</PapyrusProject>
